@@ -1,0 +1,57 @@
+# TeX compilation intermediates
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+/*.pdf
+/基本-new/*.pdf
+/発展-new/*.pdf
+
+# GitHub Pages and workflow build outputs
+/out/
+/site/
+/dist/
+
+# Root-level latexmk output and caches
+/*.aux
+/*.bbl
+/*.bcf
+/*.blg
+/*.dvi
+/*.fdb_latexmk
+/*.fls
+/*.lof
+/*.log
+/*.lot
+/*.out
+/*.run.xml
+/*.toc
+/*.synctex*
+
+# latexindent and temporary editor files
+indent.log
+*.bak
+*.bak0
+*.bak1
+*.tmp
+
+# Python/editor caches
+__pycache__/
+.pytest_cache/
+.vscode/
+.idea/

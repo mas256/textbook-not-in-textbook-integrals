@@ -1,0 +1,539 @@
+﻿\documentclass[dvipdfmx,a4paper,11pt,fleqn]{jsarticle}
+
+\usepackage{amsmath,amssymb}
+\usepackage[margin=20truemm]{geometry}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{here}
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+\usepackage{makecell}
+
+
+% 数式上下の余白
+\setlength{\abovedisplayskip}{10pt}
+\setlength{\belowdisplayskip}{10pt}
+\setlength{\abovedisplayshortskip}{8pt}
+\setlength{\belowdisplayshortskip}{8pt}
+
+% 箇条書き内で式番号を付ける
+\newcommand{\itemeq}[2][]{%
+  \refstepcounter{equation}%
+  \item
+  \makebox[\linewidth]{%
+    $\displaystyle #2$
+    \hfill
+    (\theequation)%
+  }%
+  \ifx\relax#1\relax\else
+    \label{#1}%
+  \fi
+}
+
+\title{\vspace{-3em}教科書に乗っていない積分の話}
+
+\begin{document}
+
+\date{}
+\author{}
+\maketitle
+\vspace{-5em}
+
+\section{はじめに}
+
+本書では実際の積分計算におけるテクニックを体系的にまとめ,解説を行う.
+教科書で行われる式変形や操作のモチベーションであったり,その有用性を説明する.
+いわば「行間を埋める」ものである.
+この文書を読むことで, 与えられた関数の積分をするときに,
+まず何をするべきかがわかるようになる.
+
+対象読者は教科書を一読しており,その上で体系的な演習をまだ行っていない,あるいは少し行ったがまだまだ難しいと感じている人である.
+そのため,一定程度の計算力を持っていることを前提としており,計算の手順の一部または全部を省略あるいは数式を用いずに説明することがある.
+
+また,特に断りがない限り以下の事柄を前提として議論を進める.
+
+$a,b,x,y,t,u,\alpha,\beta,\theta$を実数とする.
+$n,m$を0以上の整数とする.
+また,$C$は積分定数とする.
+
+微積分に用いられる記法はライプニッツの記法,ラグランジュの記法を用いて記す.
+ラグランジュの記法はある関数$f(x)$の導関数を$f'(x)$と表す記法のことである.
+ライプニッツの記法は,ある関数$y=f(x)$において,その微分は
+\[
+f'(x)=\lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x}=\lim_{\Delta x \to 0} \frac{f(x+\Delta x)-f(x)}{\Delta(x)}
+\]
+と表されるときこれを単に,
+\[
+f'(x)=\frac{dy}{dx}
+\]
+と書く記法である.
+この記法は極小の$x$の変化に対する極小の$y$という風に解釈でき,形式的には分数としての操作ができる.
+
+$f(x)$の原始関数を$F(x)$と表す.
+
+\section{積分の基本}
+
+積分とは微分の逆操作である.
+微分はある関数の,ある点における接線の傾きを求めることである一方で,積分は2関数の囲う領域の面積を求める操作である.
+ここでは数Ⅲの微分ができていることを前提に解説を進める.
+
+ここから紹介する公式は, すべて覚えると便利である.
+しかし覚える際に,ただ暗記するのは非常に効率が悪く,そもそも自身に論理的思考力がないと言っているようものである.
+したがって,その導出や意味するところをよく理解して覚えることが重要である.
+
+まず, 積分計算において一般に以下のことが成り立つ.
+
+\begin{itemize}[leftmargin=2em,itemsep=5pt]
+  \itemeq[eq:basic-int]{\int f(x)\,dx=F(x)+C}
+
+  \itemeq{\int kf(x)\,dx
+    =k\int f(x)\,dx
+    =kF(x)+C}
+
+  \itemeq{\int\left\{f(x)+g(x)\right\}\,dx
+    =\int f(x)\,dx+\int g(x)\,dx
+    =F(x)+G(x)+C}
+\end{itemize}
+
+また, 微分に関する公式,
+
+\begin{itemize}[leftmargin=2em,itemsep=5pt]
+  \itemeq[eq:product-rule]{
+    \{f(x)g(x)\}'
+    =f'(x)g(x)+f(x)g'(x)}
+
+  \itemeq[eq:chain-rule]{
+    \{f(g(x))\}'
+    =f'(g(x))g'(x)}
+\end{itemize}
+から, 以下のことが成り立つ.
+\begin{equation}
+  \int f'(x)g(x)\,dx
+  =f(x)g(x)-\int f(x)g'(x)\,dx
+  \label{eq:integration-by-parts}
+\end{equation}
+
+加えて, 以下の関数の微分の性質
+
+\begin{itemize}[leftmargin=2em,itemsep=5pt]
+  \itemeq{\frac{d}{dx}e^x=e^x}
+
+  \itemeq{\frac{d}{dx}\log x=\frac{1}{x}}
+
+  \itemeq{\frac{d}{dx}\sin x=\cos x}
+
+  \itemeq{\frac{d}{dx}\cos x=-\sin x}
+
+  \itemeq{\frac{d}{dx}x^\alpha=\alpha x^{\alpha-1} \quad (\alpha\in\mathbb{R})}
+
+  \itemeq[eq:chain-rule-differential]{
+    \frac{dy}{dx}
+    =\frac{dy}{du} \cdot \frac{du}{dx}}
+\end{itemize}
+
+から, 以下のことが成り立つ.
+
+\begin{itemize}[leftmargin=2em,itemsep=5pt]
+  \itemeq{\int e^x\,dx=e^x+C}
+
+  \itemeq{\int\frac{1}{x}\,dx=\log x+C}
+
+  \itemeq{\int\sin x\,dx=-\cos x+C}
+
+  \itemeq{\int\cos x\,dx=\sin x+C}
+
+  \itemeq{\int x^\alpha\,dx=\frac{1}{\alpha+1}x^{\alpha+1}+C \quad (\alpha\in\mathbb{R} ,  \alpha \neq -1),}
+
+  \itemeq{\int f(g(x))g'(x)\,dx=\int f(u)\,du} \quad
+\end{itemize}
+
+証明は省略するが, これらの公式は積分計算において非常に重要である.
+これを覚え込もうとするのではなく,演習を通してぼんやりと浮かんでくるような状態になることが望ましい.
+
+\section{部分積分}
+
+さて, 先に示したことですべての関数が積分できるわけではない.
+そして, この文書をすべて読んでも全ての積分ができるようになるわけではない.
+しかし, ここから先に示すことを理解し,扱えるようになることで, 積分できる関数の幅は大きく広がる.
+部分積分は式(6)からなる積分の手法である.
+
+では具体的に説明しよう.
+部分積分とは,積分のテクニックの1つである.その性質は,$f(x)$と$g(x)$の積として表される関数の積分において,$g(x)$部分の積分を直接せずに,$f'(x)$部分の積分と$g(x)$部分の微分のみで積分を行うことができるというものである.
+これによって,複雑な形をした関数の積分を避けて,より簡単な方の積分計算のみで解決することができる.
+例えば
+\[
+\displaystyle \int \log x\,dx
+\]
+にいて考える.
+一度,微分して$\log x$となる関数について考えてみよう.
+ぱっと思いつくのは$\left\{(\log x)^2 \right\}'$だろうか.
+一度これを微分してみよう.
+その結果は$\displaystyle \frac{2}{x} \cdot \log x$となる.
+あとは$\dfrac{2}{x}$うまく消せるように元の式に調整する項を入れればよいと思うかもしれない.
+発想自体はごくごく自然で,よく微積分を勉強していることがわかる.しかし導かれる次の式はどうなるだろうか.
+\[
+\displaystyle \left\{\frac{x}{2}\,(\log x)^2 \right\}'
+\]
+微分する関数に$x$に関する項が増えてしまったせいで結局失敗するのである.
+では他の関数はないだろうか.
+勘のいい人であれば, $\left\{x\log x -x\right\}'$を思いつくかもしれない.
+実際これは$\log x$の原始関数である.
+これを実際に積分計算で求める方法が部分積分である.
+\begin{align*}
+  \int \log x\,dx
+  &=\int (x)'\cdot \log x\,dx\\
+  &=x\log x-\int x\cdot \frac{1}{x}\,dx\\
+  &=x\log x-x
+\end{align*}
+このように,部分積分は複雑な,あるいは難しそうな式,今回で言えば$\log x$の積分を避けて,より簡単な形の積分計算のみで解決することができる.
+部分積分の強みは,やりたくない積分をせずに,より簡単な積分で済ませることができるということである.もっと一般に言えば,
+\[
+  \int f'(x)g(x)\,dx  =f(x)g(x)-\int f(x)g'(x)\,dx
+\]
+という式において$g(x)$に対しては微分の操作しか行われていない,ということである.
+
+以上の事柄をまとめると,部分積分とは,
+\begin{enumerate}
+  \item 被積分関数が$x$の関数どうしの積のときに
+  \item ある一方が複雑で
+  \item しかも微分の結果が既知あるいは簡単に求められる時に
+  \item その関数を積分せずに求められる
+\end{enumerate}
+手法である
+
+今回$f'(x)$と見なしたのは1である.このように$f'(x)$とよく見なす関数には傾向がある.それをまとめたのが以下の表である.
+
+\begin{table}[htbp]
+    \renewcommand{\arraystretch}{1.7}
+    \rowcolors{2}{black!10}{white}
+    \begin{tabular}{ccc}\Xhline{1.5pt}
+        有用度 & $f'(x)$ & $f(x)$ \\ \hline
+        高 & 1 & $x+a$ \\ 
+        高 & $e^x$ & $e^x$ \\
+        高 & $\dfrac{1}{\cos^2 x}$ & $\tan x$ \\
+        中 & $\dfrac{1}{x}$ & $\log x$ \\
+        中 & $\sin x$ & $-\cos x$ \\
+        中 & $\cos x$ & $\sin x$ \\
+        中 & $x$ & $\dfrac{x^2}{2}$ \\
+        悪 & $x^5$ (指数が大きい時) & $\dfrac{x^6}{6}$ \\ 
+        最悪 & $\log x$ & $x\log x-x$ \\
+        最悪 & $\tan x$ & $\log|\cos x|$ \\\Xhline{1.5pt}
+    \end{tabular}
+        \renewcommand{\arraystretch}{1.0}
+\end{table}
+
+また,被積分関数に三角関数や$e^x$がある場合に,何度か部分積分を繰り返すことで再び最初の式に戻ってくることがある.
+例えば,
+\[
+\int e^x \sin x \,dx
+\]
+は,
+\begin{align*}
+  I&=\int e^x \sin x \,dx  \\
+  &=\int (e^x)' \sin x \,dx \\
+  &=e^x \sin x -\int e^x \cos x \,dx\\
+  &=e^x \sin x -\int (e^x)' \cos x \,dx\\
+  &=e^x \sin x -\left\{ e^x \cos x -\int e^x (\cos x)' \,dx \right\} \\
+  &=e^x \sin x -\left\{ e^x \cos x -\int e^x (-\sin x) \,dx \right\} \\
+  &=e^x \sin x -\left( e^x \cos x +\int e^x \sin x \,dx \right) \\
+  &=e^x \sin x -\left( e^x \cos x +I \right) \\
+  &=e^x \sin x -\left( e^x \cos x +I \right) \\
+  &=e^x \sin x -e^x \cos x -I \\
+  &\therefore\\
+  2I&=e^x \sin x - e^x \cos x\\
+  I&=\frac{e^x \sin x - e^x \cos x}{2}
+\end{align*}
+と解ける.
+この過程で元の$I$が再び現れている.
+
+このようにして,部分積分は様々な積分計算で活躍する重要な手法の1つである.
+
+\section{置換積分}
+置換積分の思想は,置換後の値を簡単な値や知っている値にすることである.
+そしてなぜそう置こうと思ったのかを問うのは大方愚問である.
+根拠を説明できる場合が無いわけではないが,過去の天才たちの発想や過去の自分の経験などからなし崩し的に成り立つため,とにかく慣れが重要である.
+したがってここではよく使われる置換を紹介する.
+また,そこから発展したいくつかの有名な公式について説明する.
+
+その前に,置換積分には大きな罠が潜んでいる場合がある.
+それは主に
+\begin{itemize}
+  \item もとの値と定義域が違う
+  \item 積分範囲で元の値は単調増加だが、置換した値は極値をもつ
+  \item 分母で0が生まれてしまう
+  \item $\log$の中身が0または負になってしまう
+\end{itemize}
+である.
+これらは特に定積分の場合で起こりうるのでよく注意して置換を行わなくてはならない.
+
+一旦そういった問題が起こりうる要素を置いておいて,ひとまずは基礎的なことを確認しよう.
+置換積分とは,
+\begin{align*}
+  \int f(x) \,dx&= \int f(g(t)) \frac{dx}{dt} \,dt \\ 
+  &= \int f(g(t))g'(t) \,dt
+\end{align*}
+という一連の行為を指し,重要なのはどんな$g(x)$を考えるか,ということである.
+例で考えよう.
+\[
+\int x(2x+1)^5\,dx
+\]
+を考える.
+これを展開して計算してもよいが煩雑になりそうだ.
+ここで迷惑なのは$(2x+1)^5$の項であることは言うまでもない.
+これをシンプルな形で表そうと言うのが置換積分の趣旨である.
+ここではよく,$t=2x+1$と置いて,
+\begin{align*}
+  \int xt^5\,dx
+\end{align*}
+とすることでシンプルな見た目になる.
+しかしこのままでは,積分の意味である,幅が$dx$の極細の長方形を足していくという行為はなすことができない.
+なぜならば$t$という変数が含まれてしまっているからである.
+$x$についての式だと複雑なので$t$に関する式にすることを目標に整理していくと,
+\begin{align*}
+  t&=2x+1\\
+  x&=\frac{t-1}{2}
+\end{align*}
+また,$dx$については
+\begin{align*}
+  t=2x+1\\
+  \frac{dt}{dx}=2\\
+  dx=\frac{1}{2}dt
+\end{align*}
+が成り立つ.ここから式は
+\begin{align*}
+  \int \frac{t-1}{2}t^5\,\frac{1}{2}dt&=\frac{1}{4}\int t^6 - t^5\,dt
+\end{align*}
+となり,簡単に解くことができる.
+また,一般に$t=g(x)$と置いた時,
+\begin{align}
+  dx=\frac{1}{g'(x)}dt
+\end{align}
+となる.
+ここから言えるのは,$g'(x)$が定数になるか,ちょうど打ち消し合うような$x$を持つ項が存在していないと置換積分は失敗してしまう,ということである.
+また,$x=g(t)$と置いた時,
+\begin{align}
+  dx={g'(t)}dt
+\end{align}
+が成り立つ.
+
+もう一つぐらい置換積分の例を上げておこう.
+\[
+  \int \frac{1}{\sin x}\, dx
+\]
+この問題の発想や他の手法の検討などを長々と喋ってもよいが,ここは一度解法を見せてしまおう.
+\begin{align*}
+  \int \frac{1}{\sin x} \, dx&=\int \frac{\sin x}{\sin^2 x} \, dx\\
+  &=\int \frac{\sin x}{1- \cos^2 x}
+\end{align*}
+\hspace{2em}ここで$\cos x = t$とする.
+\begin{align*}
+  \int \frac{\sin x}{1- \cos^2 x}\,dx&= \int \frac{1}{1- t^2}\, dt\\
+  &=\frac{1}{2}\int \left(\frac{1}{1+t} + \frac{1}{1-t}\right)\, dt\\
+\end{align*}
+となり,あとは簡単な計算で求めることができる.
+
+ここで,よくある置換を紹介しよう.
+
+\begin{enumerate}
+  \item $t=(x+a)^b$
+  \item $x=a\sin x$
+  \item $x=a\cos x$
+  \item $x=a\tan x$
+  \item $t=-x$
+  \item $t=e^x$
+  \item \vspace{3pt}$\displaystyle t=\tan \frac{x}{2}$
+  \vspace{3pt} \item $t=\cos \theta$
+  \item $t=\sin \theta$
+\end{enumerate}
+この辺はよく使われるため,とりあえず困ったら全部試してみると良い.
+やっていくうちにこの置換が便利だ,ということに気付けるだろう.
+ちなみに,ほぼすべての三角関数のみで構成される積分に関しては,7の置換,$x=\tan \frac{\theta}{2}$によって$t$に関する有理式の形に落とし込むことができる.
+この置換をワイエルシュトラス置換と言う.
+その結果として複雑な三角関数を簡単に解くことができる場合がある.
+\begin{align}
+  \sin x = \frac{2t}{1+t^2}\\
+  \cos x = \frac{1-t^2}{1+t^2}\\
+  \tan x = \frac{2t}{1-t^2}\\
+  dx = \frac{2}{1+t^2}dt 
+\end{align}
+以上の変形は媒介変数表示でも見たことがあるような見た目をしているため,興味深い.
+これらは覚えておくといいことがあるかもしれない.
+
+\section{その他のテクニック}
+\subsection{king-property}
+  king-propertyと呼ばれるもので,その式は
+  \begin{align}
+    \int_{a}^{b} f(x)\, dx=\int_{a}^{b} f(a+b-x) \, dx
+  \end{align}
+というものである.
+例題を解こう.
+\[
+\int_{0}^{\frac{\pi}{2}} \frac{\sin x}{\sin x + \cos x}\, dx
+\]
+とりあえずこういう問題を見た時は$t=\sin x$だとか,$t=\cos x$だとかワイエルシュトラス置換だとかが浮かぶし,実際解くことはできるだろうが果てしない労力がかかる.
+ここでking-propertyを用いると,
+\begin{align*}
+  I&=\int_{0}^{\frac{\pi}{2}} \frac{\sin x}{\sin x + \cos x}\, dx\\
+  &=\int_{0}^{\frac{\pi}{2}} \frac{\sin (\frac{\pi}{2}-x)}{\sin (\frac{\pi}{2}-x) + \cos (\frac{\pi}{2}-x)}\, dx\\
+  &=\int_{0}^{\frac{\pi}{2}} \frac{\cos x}{\cos x + \sin x}\, dx
+\end{align*}
+\hspace{2em}となることから,
+\begin{align*}
+  2I&=\int_{0}^{\frac{\pi}{2}} \frac{\sin x}{\sin x + \cos x}\, dx+\int_{0}^{\frac{\pi}{2}} \frac{\cos x}{\cos x + \sin x}\, dx\\
+  &=\int_{0}^{\frac{\pi}{2}} 1\,dx
+\end{align*}
+となってシンプルに解くことができる.
+
+\subsection{偶関数,奇関数の対称性}
+ある関数が積分範囲の真ん中の$x$軸上の点を対称点とするとき,その積分結果は0となる.
+また,ある関数が積分範囲の真ん中の$x$軸上の点pを垂直に通る直線を対称軸1とするとき,その積分によって求まる値ははpから積分範囲のどちらか一方までの積分の結果の2倍となる.
+
+\subsection{ウォリス積分}
+ひとまず式を見よう.
+\begin{align*}
+  I_{n} &=\displaystyle \int_{0}^{\frac{\pi}{2}}\sin^{n}x\,dx\\
+  \displaystyle &=\int_{0}^{\frac{\pi}{2}}\left(-\cos x\right)'\sin^{n-1}x\,dx\\
+  \displaystyle &=\Bigl[-\cos x\sin^{n-1}x\Bigr]_{0}^{\frac{\pi}{2}}-\int_{0}^{\frac{\pi}{2}}(n-1)\sin^{n-2}x(-\cos^{2} x)\,dx\\
+  \displaystyle &=(n-1)\int_{0}^{\frac{\pi}{2}}\sin^{n-2}x\cos^{2}x\,dx\\
+  \displaystyle &=(n-1)\int_{0}^{\frac{\pi}{2}}\sin^{n-2}x(1-\sin^{2}x)\,dx\\
+  \displaystyle &=(n-1)I_{n-2}-(n-1)I_{n}\\
+  & \therefore \ \displaystyle nI_{n}=(n-1)I_{n-2}\\
+  & \therefore \ \displaystyle I_{n}=\frac{n-1}{n}I_{n-2}
+\end{align*}
+ここで面白いのは漸化式的な要素が積分に現れるということである.
+これを不定積分としても類似の結果が得られる.
+ここからえられる学びは例えば,
+\[
+\int_{0}^{\frac{\pi}{2}} \sin^{100} x \,dx
+\]
+のような式が与えられた時に愚直な計算では果てしない計算が要求されるものの,簡単に解くことができるようになる.
+そして更に言えば一般の$n$が$x$に関する式の中に含まれているものが与えられた時に$I_n$と置くことで一見複雑なものもシンプルな関係式からその結果を求めることができる場合があるのである.
+まず最初のものであるが,これを含む場合は最悪力技で展開して
+
+\section{省略した証明}
+
+式(1)の証明は, 積分の定義から導かれる.
+
+式(2)の証明は, 積分の定義と式(1)を用いることで導かれる.
+
+式(3)の証明は, 積分の定義と式(1)および式(2)を用いることで導かれる.
+
+式(4)の証明は,
+
+\begin{align*}
+  \{f(x)g(x)\}'
+  &=\lim_{h\to0}
+  \frac{f(x+h)g(x+h)-f(x)g(x)}{h}\\
+  &=\lim_{h\to0}
+  \frac{
+    f(x+h)g(x+h)-f(x)g(x+h)
+    +f(x)g(x+h)-f(x)g(x)
+  }{h}\\
+  &=\lim_{h\to0}
+  \frac{
+    \{f(x+h)-f(x)\}g(x+h)
+    +f(x)\{g(x+h)-g(x)\}
+  }{h}\\
+  &=\lim_{h\to0}
+  \frac{f(x+h)-f(x)}{h}g(x)
+  +f(x)\lim_{h\to0}
+  \frac{g(x+h)-g(x)}{h}\\
+  &=f'(x)g(x)+f(x)g'(x)
+\end{align*}
+
+式(5)の証明は,
+
+\begin{align*}
+  \{f(g(x))\}'
+  &=\lim_{h\to0}
+  \frac{f(g(x+h))-f(g(x))}{h}\\
+  &=\lim_{h\to0}
+  \frac{f(g(x+h))-f(g(x))}
+       {g(x+h)-g(x)}
+  \cdot
+  \frac{g(x+h)-g(x)}{h}\\
+  &=f'(g(x))g'(x)
+\end{align*}
+
+式(6)の証明は, 式(4)を用いることで導かれる.
+
+式(7)の証明は, 対数微分法を用いることで導かれる.
+対数微分法とは, ある関数の微分を求める際に, その関数の対数をとってから微分することである.
+対数の微分は式(8)の証明を参照.
+
+式(8)の証明は,
+
+\begin{align*}
+  (\log x)'
+  &=\lim_{h\to0}
+  \frac{\log(x+h)-\log x}{h}\\
+  &=\lim_{h\to0}
+  \frac{\log\left(\frac{x+h}{x}\right)}{h}\\
+  &=\lim_{h\to0}
+  \frac{1}{h}
+  \log\left(1+\frac{h}{x}\right)\\
+  &=\lim_{h\to0}
+  \frac{x}{h}\cdot
+  \frac{1}{x}
+  \log\left(1+\frac{h}{x}\right)\\
+  &=\lim_{h\to0}
+  \frac{1}{x}
+  \log\left(
+    1+\frac{h}{x}
+  \right)^{\frac{x}{h}}\\
+  &=\frac{1}{x}
+\end{align*}
+
+式(9),(10)の証明は, 三角関数の微分法を用いることで導かれる.
+
+式(11)の証明は,微分の定義から明らかに示される.
+
+式(12)の証明は,
+\begin{align*}
+  \frac{dy}{dx}
+  &=\lim_{h\to0}
+  \frac{y(x+h)-y(x)}{h}\\
+  &=\lim_{h\to0}
+  \frac{y(u(x+h))-y(u(x))}{h}\\
+  &=\lim_{h\to0}
+  \frac{y(u(x+h))-y(u(x))}
+       {u(x+h)-u(x)}
+  \cdot
+  \frac{u(x+h)-u(x)}{h}\\
+  &=\frac{dy}{du}\cdot\frac{du}{dx}
+\end{align*}
+
+式(13)から(18)の証明は, 式(7)から(12)の証明を用いることで導かれる.
+
+式(19),(20)については証明略.
+
+式(21)は
+\begin{align*}
+  \sin x &= 2\sin\dfrac{x}{2}\cos\dfrac{x}{2}\\
+  &= 2\cos^2\dfrac{x}{2}\tan\dfrac{x}{2}\\
+  &= \dfrac{2t}{1+t^2}
+\end{align*}
+
+式(22)は
+\begin{align*}
+  \cos x &= 2\cos^2\dfrac{x}{2}-1\\
+  &=\dfrac{2}{1+t^2}-1\\
+  &=\dfrac{1-t^2}{1+t^2}
+\end{align*}
+
+式(24)は
+\begin{align*}
+  \tan x &= \frac{\sin x}{\cos x}\\
+  &=\cfrac{\cfrac{2t}{1+t^2}}{\cfrac{1-t^2}{1+t^2}}\\
+  &=\frac{2t}{1-t^2}
+\end{align*}
+
+式(24)は
+\begin{align*}
+  \dfrac{dt}{dx}&=\dfrac{1}{2\cos^2\frac{x}{2}}\\
+  &=\dfrac{1+t^2}{2}
+\end{align*}
+
+
+式(25)は$t=a+b-x$と置いて計算することで導かれる.
+\end{document}
