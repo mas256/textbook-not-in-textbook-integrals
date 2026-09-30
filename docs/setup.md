@@ -18,15 +18,18 @@ GitHub上のRepositoryはPublicにします。Publicでは`main`の原稿自体�
 4. **Actions権限:** Settings → Actions → General → Workflow permissionsを読み取りのみにします。書き込みが必要なRelease jobは個別に権限を指定しています。
 5. **Environment `github-pages`:** Pages有効化時に作られます。デプロイ対象はデフォルトブランチのみとし、Tagパターンを追加しません。
 
-## 3. 初回確認と正式版
+## 3. 正式版をブラウザーから公開する
 
-`main`へのPushでBuildが成功することを確認します。正式版公開時はGit BashまたはWSLで、成功したCommitに対して実行します。
+1. GitHubの原稿ファイル画面で編集し、`main`へCommitします。`main`上の変更でBuildが自動実行されます。
+2. Actionsで`Build`が成功したことを確認します。
+3. Actions → `Release` → `Run workflow`を開きます。
+4. Branchを`main`にし、`version`に未使用の版番号（次回は`v1.0.1`）を入力して実行します。
+5. `Release`が成功したら、ReleasesにPDFと`.sha256`の2ファイルが添付されたことを確認します。
+6. `Deploy Pages`が成功したことを確認します。
+7. `math-textbooks`リポジトリの`books.json`で版番号を更新してCommitします。
+8. カタログのActionsが成功したら、本棚の表示を確認します。
 
-```bash
-bash scripts/tag-release.sh v1.0.0
-```
-
-ReleaseにPDFと`.sha256`が添付され、Pagesが最新版を配信します。
+GitHubのReleases画面から先にReleaseを作らないでください。Release Workflowがタグ、Release、添付ファイルをまとめて作成します。公開済みの版番号は再利用できません。
 
 ## 4. ライセンス
 

@@ -18,13 +18,11 @@ GitHub ActionsではTeX Live 2025のDockerイメージをdigest固定で使い�
 
 ## 正式版の公開
 
-Buildが成功した最新Commitで、Git BashまたはWSLから次を実行します。
+GitHubのWeb画面で操作できます。原稿を`main`にCommitするとBuildが自動実行されます。正式版にするときはActions → **Release** → **Run workflow**を開き、Branchに`main`を選択し、新しい版番号（例: `v1.0.1`）を入力して実行します。Workflowが原稿をビルドし、タグ、Release、PDF、SHA-256を作成・検証します。成功後、Pages Workflowが最新版を配信します。
 
-```bash
-bash scripts/tag-release.sh v1.0.0
-```
+GitHubのReleases画面から先にReleaseを作らないでください。公開済みの版番号は再利用できません。PDFとSHA-256がそろった正式版だけがPagesの対象になります。
 
-Tagは`vMAJOR.MINOR.PATCH`形式です。Release WorkflowがTagの原稿を再ビルドし、検証済みPDFとSHA-256を不変Releaseとして公開します。Pagesは公開済みReleaseのうちSemVerが最大の版を配信します。失敗した候補Tagは欠番として残し、削除・再利用しません。
+本棚に表示する版番号は、ReleaseとPagesの公開後に[数学書の本棚](https://github.com/mas256/math-textbooks)の`books.json`で更新します。
 
 ## ブランチ
 
