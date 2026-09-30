@@ -34,6 +34,9 @@ def parse_book(text: str) -> dict:
         if value == "":
             current_list = []
             data[key] = current_list
+        elif value == "[]":
+            current_list = None
+            data[key] = []
         else:
             if value[0] in "[{|>&*!%@`" :
                 raise ValueError(f"book.yml:{lineno}: 未対応の記法です(フロー形式・ブロックスカラー等): {raw!r}")
