@@ -7,6 +7,9 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib/common.sh
 source "$here/lib/common.sh"
 
+: "${GH_REPO:=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')}"
+[ -n "$GH_REPO" ] || die "GitHub Repositoryを特定できませんでした(gh repo view を確認してください)"
+
 tag="${1:-}"
 assume_yes=false
 [ "${2:-}" = "--yes" ] && assume_yes=true
