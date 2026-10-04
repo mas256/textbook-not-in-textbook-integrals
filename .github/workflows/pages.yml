@@ -7,6 +7,10 @@ on:
     branches: [main]
     paths:
       - .github/workflows/pages.yml
+      - scripts/pages-*.py
+      - scripts/pages-build.sh
+      - scripts/render_index.py
+      - .github/pages/**
   workflow_run:
     workflows: [Release, Build]
     types: [completed]
@@ -102,6 +106,9 @@ jobs:
           else
             echo "::warning::最新版PDFがまだ公開されていないため、正式版だけをPagesへ配信します"
           fi
+
+      - name: Publish named PDFs and catalog metadata
+        run: python3 scripts/pages-catalog.py --tag "$LATEST" --repo "$GH_REPO"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

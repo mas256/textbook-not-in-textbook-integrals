@@ -42,3 +42,11 @@ run番号ごとに固有の`latest-build-<run number>` Pre-releaseへ保存し�
 正式版のReleaseとPagesの`book.pdf`は従来どおりです。
 ビルド失敗時は直前の最新版PDFを維持し、古いrunの再実行による巻き戻しも防ぎます。
 最新版は[数学書の本棚](https://mas256.github.io/math-textbooks/)から閲覧できます。
+
+## PagesのPDFファイル名と本棚への公開情報
+
+Pagesの正式版PDFは `タイトル-vMAJOR.MINOR.PATCH.pdf`、開発中PDFは `latest-タイトル-vMAJOR.MINOR.PATCH.pdf` です。タイトルは公開Release時点の `book.yml`、版番号は配信する正式Releaseから取得します。開発中PDFの名前も現在の正式Release番号を使い、内容の更新はSHA-256クエリで区別します。
+
+Pages WorkflowはPDFと一緒に `catalog.json` を公開します。正式版はReleaseの公開日時、latestは成功ビルドの `built_at` を最終更新日時とし、再配信では変更しません。本棚はこの情報から版番号・更新日時・PDFリンクを自動取得するため、`books.json` の版番号更新は不要です。
+
+既存リンクとの互換性のため `book.pdf` と `latest.pdf` も残しますが、紹介ページと本棚はタイトル・版番号付きのPDFを案内します。公開済みReleaseのassetやTagは変更しません。
