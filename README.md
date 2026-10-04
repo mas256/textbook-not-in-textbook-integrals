@@ -22,7 +22,7 @@ GitHubのWeb画面で操作できます。原稿を`main`にCommitするとBuild
 
 GitHubのReleases画面から先にReleaseを作らないでください。公開済みの版番号は再利用できません。PDFとSHA-256がそろった正式版だけがPagesの対象になります。
 
-本棚に表示する版番号は、ReleaseとPagesの公開後に[数学書の本棚](https://github.com/mas256/math-textbooks)の`books.json`で更新します。
+本棚に表示する版番号は、ReleaseとPagesの公開後に `catalog.json` から自動取得します。
 
 ## ブランチ
 
