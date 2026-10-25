@@ -98,6 +98,10 @@ def main() -> int:
 
     catalog = json.loads(Path(args.catalog).read_text(encoding="utf-8")) if args.catalog else None
     filename = f"{book['title']}-{args.tag}.pdf"
+    mobile_link = ""
+    if catalog and catalog["release"].get("mobile"):
+        url = quote(catalog["release"]["mobile"]["pdf"])
+        mobile_link = f'<a class="mobile-link" href="{html.escape(url)}">スマホ版で読む</a>'
     latest_link = ""
     if catalog and catalog.get("latest"):
         latest = catalog["latest"]
@@ -119,6 +123,7 @@ def main() -> int:
         description=esc(book.get("description", "")),
         pdf_url=esc(quote(filename), quote=True),
         latest_link=latest_link,
+        mobile_link=mobile_link,
         tag=esc(args.tag),
         date=esc(published[args.tag]),
         release_items="\n      ".join(items),
