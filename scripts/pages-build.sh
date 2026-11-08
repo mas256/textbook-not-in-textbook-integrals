@@ -22,6 +22,18 @@ cp "${pdfs[0]}" site/book.pdf
 gh api -H 'Accept: application/vnd.github.raw+json' \
   "repos/$GH_REPO/contents/book.yml?ref=$LATEST" > book.at-tag.yml
 
+# PDFにしおりがないため、目次は最新正式版の時点のTeX原稿の見出しから作る
+rm -f source.at-tag.tex
+for tex in "$root"/*.tex; do
+  name="$(basename "$tex")"
+  encoded="$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$name")"
+  if ! gh api -H 'Accept: application/vnd.github.raw+json' \
+      "repos/$GH_REPO/contents/$encoded?ref=$LATEST" > source.at-tag.tex; then
+    echo "::warning::$name を $LATEST から取得できませんでした。目次は省略します。" >&2
+    rm -f source.at-tag.tex
+  fi
+done
+
 formal_releases > releases.ndjson
 python3 - <<'PY' > releases.json
 import json
