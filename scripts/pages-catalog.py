@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from render_index import parse_book
+from pages_toc import outline_from_pdf, release_history, toc_from_tex
 
 
 def read_json(path):
@@ -70,6 +71,10 @@ def main():
             updated_at, commit = previous["updated_at"], previous["commit"]
         catalog["latest"] = publish(site / "latest.pdf", f"latest-{title}-{args.tag}.pdf",
                                     updated_at, commit=commit)
+    toc = outline_from_pdf(site / "book.pdf") or toc_from_tex(Path("source.at-tag.tex"))
+    if toc:
+        catalog["toc"] = toc
+    catalog["history"] = release_history(releases)
     (site / "catalog.json").write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n",
                                        encoding="utf-8")
     root = Path(__file__).resolve().parent.parent

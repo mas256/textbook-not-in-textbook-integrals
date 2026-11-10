@@ -49,4 +49,6 @@ Pagesの正式版PDFは `タイトル-vMAJOR.MINOR.PATCH.pdf`、開発中PDFは 
 
 Pages WorkflowはPDFと一緒に `catalog.json` を公開します。正式版はReleaseの公開日時、latestは成功ビルドの `built_at` を最終更新日時とし、再配信では変更しません。本棚はこの情報から版番号・更新日時・PDFリンクを自動取得するため、`books.json` の版番号更新は不要です。
 
+`catalog.json` には目次 `toc` と正式版の履歴 `history` も含めます。正式版PDFにしおりがないため、目次は最新正式版の時点のTeX原稿の `\section`・`\subsection` から作ります（`scripts/pages_toc.py`、ページ番号なし）。PDFにしおりを付けた場合は、しおりの章と節をページ番号付きで使います。履歴は公開済みの正式版を新しい順に並べたものです。本棚の教科書ページはこの情報から目次と版の履歴を表示します。
+
 既存リンクとの互換性のため `book.pdf` と `latest.pdf` も残しますが、紹介ページと本棚はタイトル・版番号付きのPDFを案内します。公開済みReleaseのassetやTagは変更しません。
